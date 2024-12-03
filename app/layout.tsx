@@ -33,3 +33,7 @@ export default function RootLayout({
     </html>
   );
 }
+
+interface InputProps extends React.ComponentProps<"input"> {
+  customSize?: "default" | "lg";
+}
