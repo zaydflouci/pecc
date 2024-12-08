@@ -1,3 +1,5 @@
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+
 interface CheckDisplayProps {
   checkNumber?: string
   amount?: string
@@ -5,6 +7,7 @@ interface CheckDisplayProps {
   accountHolder?: string
   validityDate?: string
   ribNumber?: string
+  showSuccessAnimation?: boolean;
 }
 
 export function CheckDisplay({
@@ -13,7 +16,8 @@ export function CheckDisplay({
   payee = 'Kaoun LTD',
   accountHolder = '---',
   validityDate = '---',
-  ribNumber = '---'
+  ribNumber = '---',
+  showSuccessAnimation = false,
 }: CheckDisplayProps) {
   return (
     <div className="bg-white rounded-none p-4 shadow-md border">
@@ -55,6 +59,18 @@ export function CheckDisplay({
           <span className="text-xs">{ribNumber}</span>
         </div>
        </div> 
+
+        {showSuccessAnimation && (
+          <div className="absolute -mr-2 top-0 right-0">
+            <DotLottieReact
+              src="/approved.json"
+              loop={false}
+              speed={2}
+              autoplay
+              style={{ width: '80px', height: 'auto' }}
+            />
+          </div>
+        )}
       </div>
     </div>
   )

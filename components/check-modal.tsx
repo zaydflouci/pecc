@@ -23,18 +23,23 @@ interface CheckData {
   ribNumber: string
 }
 
-const LOTTIE_ANIMATION_URL = 'https://lottie.host/dcdd576d-186a-4779-a811-82608e4349b2/VQ5mgKDBDK.lottie'
+const LOTTIE_ANIMATION_URL = 'https://lottie.host/39390b4f-67eb-42dd-a1c4-26e9f78a10fc/PtnMaNdw2N.lottie'
 
 export function CheckModal({ open, onOpenChange }: CheckModalProps) {
-  const [step, setStep] = useState<'id' | 'amount' | 'result' | 'closed'>('id')
+  const [step, setStep] = useState<'id' | 'amount' | 'result' | 'closed' | 'reservation'>('id')
   const [checkId, setCheckId] = useState('')
   const [amount, setAmount] = useState('')
   const [checkData, setCheckData] = useState<CheckData | null>(null)
   const [amountError, setAmountError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleStepChange = (newStep: 'id' | 'amount' | 'result' | 'closed') => {
+  const handleStepChange = (newStep: 'id' | 'amount' | 'result' | 'closed' | 'reservation') => {
     if (newStep === 'closed') {
+      setStep('id');
+      setCheckId('');
+      setAmount('');
+      setCheckData(null);
+      setAmountError('');
       onOpenChange(false);
     } else {
       setStep(newStep);
@@ -86,8 +91,22 @@ export function CheckModal({ open, onOpenChange }: CheckModalProps) {
     handleStepChange('result')
   }
 
+  const handleReservation = async () => {
+    setIsLoading(true)
+    await new Promise(resolve => setTimeout(resolve, 5000))
+    setIsLoading(false)
+    handleStepChange('reservation')
+  }
+
+  const handleDialogClose = (isOpen: boolean) => {
+    if (!isOpen) {
+      handleStepChange('closed');
+    }
+    onOpenChange(isOpen);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleDialogClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Consultation de chèque</DialogTitle>
@@ -96,7 +115,10 @@ export function CheckModal({ open, onOpenChange }: CheckModalProps) {
         <div className="space-y-6">
           <div className="relative">
             <div className={`${isLoading ? 'opacity-50' : ''}`}>
-              <CheckDisplay {...checkData} />
+              <CheckDisplay 
+                {...checkData} 
+                showSuccessAnimation={step === 'reservation'}
+              />
             </div>
             {isLoading && (
               <div className="absolute overflow-hidden inset-0 flex items-center justify-center">
@@ -137,13 +159,6 @@ export function CheckModal({ open, onOpenChange }: CheckModalProps) {
 
           {step === 'amount' && (
             <div className={`space-y-4 ${isLoading ? 'opacity-50' : ''}`}>
-              <Alert variant="default">
-                <Info className="h-4 w-4" />
-                <AlertTitle>Information</AlertTitle>
-                <AlertDescription>
-                  Veuillez entrer le montant exact du chèque pour la vérification.
-                </AlertDescription>
-              </Alert>
               <div>
                 <label htmlFor="amount" className="text-sm font-medium">
                   Montant (TND)
@@ -189,13 +204,48 @@ export function CheckModal({ open, onOpenChange }: CheckModalProps) {
                 </AlertDescription>
               </Alert>
               <div className="flex justify-between">
-                <Button size='lg' variant="outline" onClick={() => handleStepChange('amount')}>
-                  <ArrowLeft className="mr-2 h-4 w-4" />
+                <Button size='iconlg' variant="outline" onClick={() => handleStepChange('amount')} >
+                  <ArrowLeft className=" h-4 w-4" />
                 </Button>
-                <Button size='lg'>
-                  <ShieldCheck className="mr-2 h-4 w-4" /> Reserver la provision
+                <Button size='lg' onClick={handleReservation} disabled={isLoading}>
+                  {isLoading ? (
+                    <>
+                      <span className="mr-1 h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-white"></span>
+                      Réservation en cours...
+                    </>
+                  ) : (
+                    <>
+                      <ShieldCheck className="mr-1 h-4 w-4" /> Reserver la provision
+                    </>
+                  )}
                 </Button>
               </div>
+            </div>
+          )}
+
+          {step === 'reservation' && (
+            <div className="space-y-4">
+              <Alert variant="success">
+                <CircleCheckBig className="h-4 w-4" />
+                <AlertTitle>Réservation réussie</AlertTitle>
+                <AlertDescription>
+                Votre réservation a été effectuée avec succès. Les fonds sont réservés.
+                </AlertDescription>
+              </Alert>
+              <Button
+                size='lg'
+                className="w-full"
+                onClick={() => {
+                  onOpenChange(false);
+                  setStep('id');
+                  setCheckId('');
+                  setAmount('');
+                  setCheckData(null);
+                  setAmountError('');
+                }}
+              >
+                Terminer
+              </Button>
             </div>
           )}
         </div>

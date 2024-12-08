@@ -45,10 +45,10 @@ import {
 
 const groups = [
   {
-    label: "Personal Account",
+    label: "Compte principal",
     teams: [
       {
-        label: "Alicia Koch",
+        label: "Zayd Ouni",
         value: "personal",
       },
     ],
@@ -57,11 +57,11 @@ const groups = [
     label: "Teams",
     teams: [
       {
-        label: "Acme Inc.",
+        label: "Kaoun LTD.",
         value: "acme-inc",
       },
       {
-        label: "Monsters Inc.",
+        label: "Entreprise XYZ",
         value: "monsters",
       },
     ],
@@ -152,7 +152,7 @@ export function AccountSwitcher({ className }: AccountSwitcherProps) {
                     }}
                   >
                     <PlusCircledIcon className="mr-2 h-5 w-5" />
-                    Create Team
+                    Ajouter un membre
                   </CommandItem>
                 </DialogTrigger>
               </CommandGroup>
@@ -162,7 +162,7 @@ export function AccountSwitcher({ className }: AccountSwitcherProps) {
       </Popover>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create team</DialogTitle>
+          <DialogTitle>Ajouter un membre</DialogTitle>
           <DialogDescription>
             Add a new team to manage products and customers.
           </DialogDescription>
